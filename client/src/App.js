@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './App.css';
 
+import Courses from './components/Courses';
+
 class App extends Component {
   state = {
     courses: []
@@ -15,7 +17,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-      <ul>{this.state.courses}</ul>
+      <Courses />
     </div>
     )
   }
