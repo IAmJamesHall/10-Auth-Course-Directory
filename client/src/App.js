@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+// const axios = require('axios');
 import './global.css';
 
 import { 
@@ -11,18 +13,28 @@ import Courses from './components/Courses';
 import CourseDetails from './components/CourseDetails';
 import Header from './components/Header';
 import EditCourseDetails from './components/EditCourseDetails';
+import UserSignUp from './components/UserSignUp';
+import UserSignIn from './components/UserSignIn';
 
 class App extends Component {
   state = {
-    courses: [],
     user: {}
   };
 
-  // async componentDidMount() {
-  //   const courses = await axios.get('http://localhost:5000/api/courses');
-  //   const courseTitles = courses.data.map(course => <li>{course.title}</li>);
-  //   this.setState({ courses: courseTitles });
-  // }
+  userSignUp = (form) => {
+    debugger;
+    axios.post('http://localhost:5000/api/users', { ...form })
+      .then((response) => {
+        console.log(response);
+      }, (error) => {
+        debugger;
+        console.log(error);
+      });
+  }
+
+  userSignIn = () => {
+
+  }
 
   render() {
     return (
@@ -48,6 +60,12 @@ class App extends Component {
             <Route exact path="/courses/:courseId/update"
               render={props => (
                 <EditCourseDetails match={props.match} purpose="update"/>)} />
+
+            {/* sign up for a user account */}
+            <Route exact path="/signup" render={() => <UserSignUp userSignUp={this.userSignUp} />} />
+
+            {/* sign in to an existing user account */}
+            <Route exact path="/signin" component={UserSignIn} />
 
 
 

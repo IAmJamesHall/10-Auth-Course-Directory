@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import ValidationErrors from './ValidationErrors';
+
 const axios = require('axios');
 
 export default class EditCourseDetails extends Component {
@@ -40,24 +42,6 @@ export default class EditCourseDetails extends Component {
     this.setState({ course });
   }
 
-  getValidationErrors = () => {
-    const { validationErrors } = this.state;
-    if (validationErrors) {
-      const errors = validationErrors.map(error => (
-        <li>Please provide a value for "{error}"</li>
-      ));
-      return (
-        <div className="validation-errors">
-          <ul>
-            {errors}
-          </ul>
-        </div>
-      )
-    } else {
-      return (<div></div>)
-    }
-  }
-
   render() {
     const { course } = this.state;
     const { user } = this.state;
@@ -65,7 +49,7 @@ export default class EditCourseDetails extends Component {
       <div className="bounds course--detail">
       <h1>{this.state.purpose} Course</h1>
       <div>
-        {this.getValidationErrors()}
+        <ValidationErrors errors={this.state.validationErrors} />
         <form>
           <div className="grid-66">
             <div className="course--header">

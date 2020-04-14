@@ -34,7 +34,10 @@ router.post('/', asyncHandler( async(req, res) => {
     await User.create(req.body);
     res.status(201).end()
   } else { //validation errors were found
+    console.log(validationErrors);
+    console.log(req.body.firstName);
     res.status(400).json({message: "Bad request", errors: validationErrors });
+    
   }
 }))
 
