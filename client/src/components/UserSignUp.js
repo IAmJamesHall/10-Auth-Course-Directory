@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import ValidationErrors from './ValidationErrors';
 
 export default class UserSignUp extends Component {
@@ -66,7 +67,7 @@ export default class UserSignUp extends Component {
             </form>
           </div>
           <p>&nbsp;</p>
-          <p>Already have a user account? <a href="#">Click here</a> to sign in!</p>
+          <p>Already have a user account? <Link to="/signin">Click here</Link> to sign in!</p>
         </div>
       </div>
     )

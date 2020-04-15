@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {Redirect} from 'react-router-dom';
+import {Redirect, Link} from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 // props.match.params.courseId
 
@@ -15,17 +16,6 @@ export default class CourseDetails extends Component {
     this.setState({course: data});
   }
 
-  createList = (text) => {
-    if (text) {
-      let list = text.split('* ');
-      const jsx = list.map(line => (line.length > 1 ? <li>{line}</li> : null));
-      return jsx;
-    } else {
-      return text;
-    }
-  }
-
-
   render() {
     const course = this.state.course;
     console.log(course);
@@ -34,8 +24,12 @@ export default class CourseDetails extends Component {
         <div>
           <div className="actions--bar">
             <div className="bounds">
-              <div className="grid-100"><span><a className="button" href={`/courses/${course.id}/update`}>Update Course</a><a className="button" href="#">Delete Course</a></span><a
-                className="button button-secondary" href="/">Return to List</a></div>
+              <div className="grid-100">
+                <span>
+                  <Link className="button" to={`/courses/${course.id}/update`}>Update Course</Link>
+                  <Link className="button" to="#">Delete Course</Link>
+                </span>
+                <Link className="button button-secondary" to="/">Return to List</Link></div>
             </div>
           </div>
           <div className="bounds course--detail">
@@ -45,7 +39,7 @@ export default class CourseDetails extends Component {
                 <h3 className="course--title">{course.title}</h3>
                 {/* <p>By {course.User.firstName} {course.User.lastName}</p> */}
               </div>
-              <div className="course--description"><p>{course.description}</p></div>
+              <div className="course--description"><p><ReactMarkdown source={course.description} /></p></div>
             </div>
             <div className="grid-25 grid-right">
               <div className="course--stats">
@@ -56,7 +50,7 @@ export default class CourseDetails extends Component {
                   </li>
                   <li className="course--stats--list--item">
                     <h4>Materials Needed</h4>
-                    <p>{this.createList(course.materialsNeeded)}</p>
+                    <ReactMarkdown source={course.materialsNeeded} />
                   </li>
                 </ul>
               </div>

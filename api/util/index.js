@@ -36,6 +36,7 @@ function authenticateUser() {
   return async (req, res, next) => {
     const auth = require('basic-auth');
     const authUser = auth(req);
+    console.log('authUser: ', authUser);
     // normalize attributes 
     if (authUser) {
       authUser.emailAddress = authUser.name;
@@ -56,7 +57,9 @@ function authenticateUser() {
             if (result) { // if password is correct
               res.locals.user = {
                 emailAddress: foundUser.emailAddress,
-                userId: foundUser.id
+                userId: foundUser.id,
+                firstName: foundUser.firstName,
+                lastName: foundUser.lastName
               };
               next();
             } else { //password is incorrect

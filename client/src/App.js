@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
+
 import axios from 'axios';
-// const axios = require('axios');
+import base64 from 'base-64';
+import Cookies from 'universal-cookie';
+
+
 import './global.css';
 
 import { 
@@ -15,11 +19,24 @@ import Header from './components/Header';
 import EditCourseDetails from './components/EditCourseDetails';
 import UserSignUp from './components/UserSignUp';
 import UserSignIn from './components/UserSignIn';
+import UserSignOut from './components/UserSignOut';
+
+
+const cookies = new Cookies();
+
+
+
 
 class App extends Component {
   state = {
     user: {}
   };
+
+  componentDidMount() {
+    const emailAddress = cookies.get('emailAddress');
+    const password = cookies.get('password');
+    this.userSignIn({ emailAddress, password })
+  }
 
   userSignUp = (form) => {
     debugger;
@@ -32,15 +49,102 @@ class App extends Component {
       });
   }
 
-  userSignIn = () => {
+  userSignIn = (form) => {
+    const { emailAddress, password } = form;
+    axios.get('http://localhost:5000/api/users', {
+      headers: {
+        'Authorization': `Basic ${base64.encode(`${emailAddress}:${password}`)}`
+      }
+    })
+    .then(response => {
+      if (response.status === 200) {
+        console.log('logging in: ', response);
+        response.data.user.password = password;
+        this.setState({user: response.data.user});
+        
 
+        cookies.set('emailAddress', emailAddress, { path: '/' });
+        cookies.set('password', password, { path: '/' })
+        return true;
+      }
+    })
+    .catch(error => {
+      return false;
+    })
   }
+
+  userSignOut = () => {
+    this.setState({user: {}}); 
+  }
+
+  saveCourse = (course, purpose) => {
+    if (purpose === "create") {
+      const { emailAddress, password } = this.state.user;
+      const { 
+        title, 
+        description,
+        estimatedTime,
+        materialsNeeded } = course;
+      axios({
+        method: 'post',
+        url: 'http://localhost:5000/api/courses',
+        headers: {
+          'Authorization': `Basic ${base64.encode(`${emailAddress}:${password}`)}`
+        },
+        data: {
+          title,
+          description,
+          estimatedTime,
+          materialsNeeded
+        }
+      })
+
+
+    } else if (purpose === "update") {
+      console.log('going to update');
+      const { emailAddress, password } = this.state.user;
+      if (course.User.emailAddress === emailAddress) {
+        const { 
+          title, 
+          description,
+          estimatedTime,
+          materialsNeeded } = course;
+
+        axios({
+          method: "put",
+          url: `http://localhost:5000/api/courses/${course.id}`,
+          headers: {
+            'Authorization': `Basic ${base64.encode(`${emailAddress}:${password}`)}`
+          },
+          data: {
+            title,
+            description,
+            estimatedTime,
+            materialsNeeded
+          }
+        })
+        .then(response => {
+          return { response: {
+            status: 204,
+            message: "Update succeeded"
+          }}
+        })
+      } else { //user does not have permission to update course
+        return {response: {
+          status: 401,
+          message: "User does not own this course"
+        }}
+      }
+    }
+  }
+
+
 
   render() {
     return (
       <BrowserRouter>
         <div className="App">
-          <Header />
+          <Header user={this.state.user} />
           <Switch>
             
             {/* view courses */}
@@ -48,7 +152,7 @@ class App extends Component {
 
             {/* create new course */}
             <Route exact path="/courses/new" render={props => (
-              <EditCourseDetails purpose="create" />
+              <EditCourseDetails purpose="create" saveCourse={this.saveCourse} />
             )} />
 
             {/* view individual course details */}
@@ -59,14 +163,16 @@ class App extends Component {
             {/* update individual course details */}
             <Route exact path="/courses/:courseId/update"
               render={props => (
-                <EditCourseDetails match={props.match} purpose="update"/>)} />
+                <EditCourseDetails match={props.match} purpose="update" saveCourse={this.saveCourse} />)} />
 
             {/* sign up for a user account */}
             <Route exact path="/signup" render={() => <UserSignUp userSignUp={this.userSignUp} />} />
 
             {/* sign in to an existing user account */}
-            <Route exact path="/signin" component={UserSignIn} />
+            <Route exact path="/signin" render={(props) => <UserSignIn userSignIn={this.userSignIn} history={props.history} />} />
 
+            {/* sign out user */}
+            <Route exact path="/signout" render={() => <UserSignOut userSignOut={this.userSignOut} cookies={cookies} /> } />
 
 
             {/* redirect '/' route to /courses */}

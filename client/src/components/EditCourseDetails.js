@@ -7,7 +7,12 @@ export default class EditCourseDetails extends Component {
 
   state = {
     validationErrors: [],
-    course: {},
+    course: {
+      title: "",
+      description: "",
+      estimatedTime: "",
+      materialsNeeded: ""
+    },
     user: {
       firstName: "",
       lastName: ""
@@ -42,43 +47,67 @@ export default class EditCourseDetails extends Component {
     this.setState({ course });
   }
 
+  submitForm = e => {
+    e.preventDefault();
+    const { title, description } = this.state.course;
+    this.setState({validationErrors: []});
+    const validationErrors = [...this.state.validationErrors];
+
+    if (title === "") validationErrors.push('Title');
+    if (description === "") validationErrors.push('Description');
+
+    this.setState({validationErrors}, () => {
+      if (this.state.validationErrors.length === 0) {
+        this.props.saveCourse(this.state.course, this.props.purpose);
+      }
+    });
+
+
+    
+  }
+
   render() {
     const { course } = this.state;
     const { user } = this.state;
     return (
       <div className="bounds course--detail">
-      <h1>{this.state.purpose} Course</h1>
-      <div>
-        <ValidationErrors errors={this.state.validationErrors} />
-        <form>
-          <div className="grid-66">
-            <div className="course--header">
-              <h4 className="course--label">Course</h4>
-              <div><input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title" value={course.title} onChange={this.onChange} /></div>
-              <p>By {user.firstName} {user.lastName}</p>
+        <h1>{this.state.purpose} Course</h1>
+        <div>
+          <ValidationErrors errors={this.state.validationErrors} />
+          <form onSubmit={this.submitForm}>
+            <div className="grid-66">
+              <div className="course--header">
+                <h4 className="course--label">Course</h4>
+                <div>
+                  <input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title" value={course.title} onChange={this.onChange} />
+                </div>
+                <p>By {user.firstName} {user.lastName}</p>
+              </div>
+              <div className="course--description">
+                <div><textarea id="description" name="description" className="" placeholder="Course description..." onChange={this.onChange} value={course.description} /></div>
+              </div>
             </div>
-            <div className="course--description">
-              <div><textarea id="description" name="description" className="" placeholder="Course description..." onChange={this.onChange} value={course.description} /></div>
+            <div className="grid-25 grid-right">
+              <div className="course--stats">
+                <ul className="course--stats--list">
+                  <li className="course--stats--list--item">
+                    <h4>Estimated Time</h4>
+                    <div><input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input" placeholder="Hours" value={course.estimatedTime} onChange={this.onChange} /></div>
+                  </li>
+                  <li className="course--stats--list--item">
+                    <h4>Materials Needed</h4>
+                    <div><textarea id="materialsNeeded" name="materialsNeeded" className="" placeholder="List materials..." value={course.materialsNeeded} onChange={this.onChange} ></textarea></div>
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div>
-          <div className="grid-25 grid-right">
-            <div className="course--stats">
-              <ul className="course--stats--list">
-                <li className="course--stats--list--item">
-                  <h4>Estimated Time</h4>
-                  <div><input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input" placeholder="Hours" value={course.estimatedTime} onChange={this.onChange} /></div>
-                </li>
-                <li className="course--stats--list--item">
-                  <h4>Materials Needed</h4>
-                  <div><textarea id="materialsNeeded" name="materialsNeeded" className="" placeholder="List materials..." value={course.materialsNeeded} onChange={this.onChange} ></textarea></div>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="grid-100 pad-bottom"><button className="button" type="submit">{this.state.purpose} Course</button><button className="button button-secondary" onclick="event.preventDefault(); location.href='index.html';">Cancel</button></div>
-        </form>
+            <div className="grid-100 pad-bottom">
+              <button className="button" type="submit">{this.state.purpose} Course</button>
+              <button className="button button-secondary" onclick="event.preventDefault(); location.href='index.html';">Cancel</button>
+              </div>
+          </form>
+        </div>
       </div>
-    </div>
     );
   }
 }
