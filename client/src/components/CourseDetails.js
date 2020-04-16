@@ -16,6 +16,29 @@ export default class CourseDetails extends Component {
     this.setState({course: data});
   }
 
+  isUserOwner() {
+    try {
+      const user = this.state.course.User;
+      console.log(user);
+  
+      const authenticatedUser = this.props.user.userId;
+      const ownerUser = user.id;
+      if (authenticatedUser === ownerUser) {
+        return (
+          <span>
+            <Link className="button" to={`/courses/${this.state.course.id}/update`}>Update Course</Link>
+            <Link className="button" to="#">Delete Course</Link>
+          </span>
+        )
+      } else {
+        return <span></span>
+      }
+    } catch {
+      return <span></span>
+    }
+    
+  }
+
   render() {
     const course = this.state.course;
     console.log(course);
@@ -25,10 +48,7 @@ export default class CourseDetails extends Component {
           <div className="actions--bar">
             <div className="bounds">
               <div className="grid-100">
-                <span>
-                  <Link className="button" to={`/courses/${course.id}/update`}>Update Course</Link>
-                  <Link className="button" to="#">Delete Course</Link>
-                </span>
+                {this.isUserOwner()}
                 <Link className="button button-secondary" to="/">Return to List</Link></div>
             </div>
           </div>

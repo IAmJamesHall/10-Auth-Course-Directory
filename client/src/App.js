@@ -148,7 +148,7 @@ class App extends Component {
           <Switch>
             
             {/* view courses */}
-            <Route exact path="/courses" component={Courses} />
+            <Route exact path="/courses" render={() => <Courses user={this.state.user}/>} />
 
             {/* create new course */}
             <Route exact path="/courses/new" render={props => (
@@ -158,12 +158,17 @@ class App extends Component {
             {/* view individual course details */}
             <Route exact path="/courses/:courseId" 
               render={props => (
-                <CourseDetails match={props.match} />)} />
+                <CourseDetails match={props.match} 
+                user={this.state.user} />)} />
 
             {/* update individual course details */}
             <Route exact path="/courses/:courseId/update"
               render={props => (
-                <EditCourseDetails match={props.match} purpose="update" saveCourse={this.saveCourse} />)} />
+                <EditCourseDetails 
+                  match={props.match} 
+                  purpose="update" 
+                  saveCourse={this.saveCourse}
+                  user={this.state.user} />)} />
 
             {/* sign up for a user account */}
             <Route exact path="/signup" render={() => <UserSignUp userSignUp={this.userSignUp} />} />

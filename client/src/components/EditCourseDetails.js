@@ -15,7 +15,9 @@ export default class EditCourseDetails extends Component {
     },
     user: {
       firstName: "",
-      lastName: ""
+      lastName: "",
+      id: "",
+      emailAddress: ""
     }
   }
 
