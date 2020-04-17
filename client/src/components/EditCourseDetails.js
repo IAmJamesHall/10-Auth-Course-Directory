@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import ValidationErrors from './ValidationErrors';
 
 const axios = require('axios');
 
-export default class EditCourseDetails extends Component {
+class EditCourseDetails extends Component {
 
   state = {
     validationErrors: [],
@@ -26,8 +27,8 @@ export default class EditCourseDetails extends Component {
     if (this.props.purpose === "update") {
       const { courseId } = this.props.match.params;
       const course = await axios.get(`http://localhost:5000/api/courses/${courseId}`)
-      this.setState({course: course.data});
-      this.setState({user: course.data.User});
+      this.setState({ course: course.data });
+      this.setState({ user: course.data.User });
     } else {
       this.setState({
         course: {
@@ -35,7 +36,9 @@ export default class EditCourseDetails extends Component {
           description: "",
           materialsNeeded: "",
           estimatedTime: ""
-        }});
+        },
+        user: this.props.user
+      });
     }
 
     // capitalize purpose
@@ -49,20 +52,30 @@ export default class EditCourseDetails extends Component {
     this.setState({ course });
   }
 
+  cancelForm = e => {
+    this.props.history.push('/courses');
+  }
+
   submitForm = e => {
     e.preventDefault();
     const { title, description } = this.state.course;
-    this.setState({validationErrors: []});
+    this.setState({ validationErrors: [] });
     const validationErrors = [...this.state.validationErrors];
 
     if (title === "") validationErrors.push('Title');
     if (description === "") validationErrors.push('Description');
 
-    this.setState({validationErrors}, () => {
+    this.setState({ validationErrors }, async () => {
       if (this.state.validationErrors.length === 0) {
-        this.props.saveCourse(this.state.course, this.props.purpose);
+        const response = await this.props.saveCourse(this.state.course, this.props.purpose);
+        console.log('response in EditCourseDetails: ', response)
+        if (response.status === 200) {
+          this.props.history.push(`/courses/${response.data.id}`);
+        } else {
+          // TODO: ERROR UPDATING COURSE
+        }
       }
-    });
+  });
 
 
     
@@ -70,7 +83,7 @@ export default class EditCourseDetails extends Component {
 
   render() {
     const { course } = this.state;
-    const { user } = this.state;
+    const user = this.state.user || {};
     return (
       <div className="bounds course--detail">
         <h1>{this.state.purpose} Course</h1>
@@ -105,7 +118,7 @@ export default class EditCourseDetails extends Component {
             </div>
             <div className="grid-100 pad-bottom">
               <button className="button" type="submit">{this.state.purpose} Course</button>
-              <button className="button button-secondary" onclick="event.preventDefault(); location.href='index.html';">Cancel</button>
+              <button className="button button-secondary" onClick={this.cancelForm}>Cancel</button>
               </div>
           </form>
         </div>
@@ -113,3 +126,5 @@ export default class EditCourseDetails extends Component {
     );
   }
 }
+
+export default withRouter(EditCourseDetails);

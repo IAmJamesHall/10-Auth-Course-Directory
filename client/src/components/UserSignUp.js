@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import ValidationErrors from './ValidationErrors';
 
-export default class UserSignUp extends Component {
+class UserSignUp extends Component {
   state = {
     validationErrors: [],
     form: {
@@ -20,7 +20,13 @@ export default class UserSignUp extends Component {
     this.setState({form});
   }
 
-  submitForm = (e) => {
+  addValidationError = async (error) => {
+    this.setState((prevState => ({
+      validationErrors: [...prevState.validationErrors, error]
+    })));
+  }
+
+  submitForm = async (e) => {
     e.preventDefault();
     console.log("UserSignUp's submitForm()")
     const { form } = this.state
@@ -28,24 +34,30 @@ export default class UserSignUp extends Component {
     //delete current form validation errors
     this.setState({validationErrors: []});
 
+    // check that password was correctly entered twice
+    if (form.password === form.confirmPassword) {
+      console.log('form.password:', form.password);
+      console.log('form.confirmPassword', form.confirmPassword);
+      await this.addValidationError('Passwords do not match');
+    }
+
     // validate data
-    Object.keys(form).forEach(formElement => {
+    Object.keys(form).forEach(async (formElement) => {
       if (this.state.form[formElement] === "") {
         //convert camelCase to caps case
         var result = formElement.replace( /([A-Z])/g, " $1" );
         var prettyFormElement = result.charAt(0).toUpperCase() + result.slice(1);
 
-        console.log(formElement);
-
-        this.setState((prevState) => ({
-          validationErrors: [...prevState.validationErrors, prettyFormElement]
-        }))
+        await this.addValidationError(`${prettyFormElement} cannot be empty`);
       }
     })
 
     if (this.state.validationErrors.length === 0) {
-      console.log('About to send it');
-      this.props.userSignUp(this.state.form);
+      console.log('About to send it. (Val errors:', this.state.validationErrors);
+      const { form } = this.state;
+      form.emailAddress = form.emailAddress.toLowerCase();
+      await this.props.userSignUp(form);
+      this.props.history.push('/courses');
     }
   }
 
@@ -73,3 +85,5 @@ export default class UserSignUp extends Component {
     )
   }
 }
+
+export default withRouter(UserSignUp);

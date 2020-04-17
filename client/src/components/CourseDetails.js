@@ -27,7 +27,7 @@ export default class CourseDetails extends Component {
         return (
           <span>
             <Link className="button" to={`/courses/${this.state.course.id}/update`}>Update Course</Link>
-            <Link className="button" to="#">Delete Course</Link>
+            <Link className="button" to={`/courses/${this.state.course.id}/delete`}>Delete Course</Link>
           </span>
         )
       } else {
@@ -42,7 +42,7 @@ export default class CourseDetails extends Component {
   render() {
     const course = this.state.course;
     console.log(course);
-    if (course) {
+    if (Object.keys(course).length > 0) {
       return (
         <div>
           <div className="actions--bar">
@@ -57,21 +57,35 @@ export default class CourseDetails extends Component {
               <div className="course--header">
                 <h4 className="course--label">Course</h4>
                 <h3 className="course--title">{course.title}</h3>
-                {/* <p>By {course.User.firstName} {course.User.lastName}</p> */}
+                <p>By {course.User.firstName} {course.User.lastName}</p>
               </div>
-              <div className="course--description"><p><ReactMarkdown source={course.description} /></p></div>
+              <div className="course--description"><ReactMarkdown source={course.description} /></div>
             </div>
             <div className="grid-25 grid-right">
               <div className="course--stats">
                 <ul className="course--stats--list">
-                  <li className="course--stats--list--item">
-                    <h4>Estimated Time</h4>
-                    <h3>{course.estimatedTime}</h3>
-                  </li>
-                  <li className="course--stats--list--item">
-                    <h4>Materials Needed</h4>
-                    <ReactMarkdown source={course.materialsNeeded} />
-                  </li>
+                  {(() => {
+                    console.log(course.estimatedTime);
+                    if (course.estimatedTime) {
+                      return (<li className="course--stats--list--item">
+                        <h4>Estimated Time</h4>
+                        <h3>{course.estimatedTime}</h3>
+                      </li>)
+                    }
+                  })()}
+
+                  {(() => {
+                    console.log('course.materialsNeeded: ', course.materialsNeeded)
+                    if (course.materialsNeeded) {
+                      return (
+                        <li className="course--stats--list--item">
+                          <h4>Materials Needed</h4>
+                          <ReactMarkdown source={course.materialsNeeded} />
+                        </li>
+                      )
+                    }
+                  })()}
+                  
                 </ul>
               </div>
             </div>

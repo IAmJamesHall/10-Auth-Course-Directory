@@ -4,7 +4,7 @@ export default function validationErrors(props) {
   const { errors } = props;
   if (errors) {
     const errorMessages = errors.map(error => (
-      <li>Problem with "{error}" field</li>
+      <li>{error}</li>
     ));
     return (
       <div className="validation-errors">

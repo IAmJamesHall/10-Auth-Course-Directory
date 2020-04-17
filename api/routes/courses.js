@@ -92,6 +92,7 @@ router.put('/:id', authenticateUser(), asyncHandler( async (req, res) => {
         course[keys[i]] = req.body[keys[i]];
       }
       await course.save();
+      res.json(course);
     } else { // user has no permission to edit the course
       res.status(403).end();
     }

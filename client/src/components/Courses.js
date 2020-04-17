@@ -20,7 +20,7 @@ export default class Courses extends Component {
   }
 
   addCourseButton = () => {
-    if (Object.keys(this.props.user).length > 0) {
+    if (this.props.user.authenticated) {
       return (
         <div className="grid-33"><Link className="course--module course--add--module" to="/courses/new">
           <h3 className="course--add--title"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"

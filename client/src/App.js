@@ -11,7 +11,8 @@ import {
   BrowserRouter,
   Route,
   Switch,
-  Redirect } from 'react-router-dom';
+  Redirect, 
+  withRouter } from 'react-router-dom';
 
 import Courses from './components/Courses';
 import CourseDetails from './components/CourseDetails';
@@ -20,6 +21,10 @@ import EditCourseDetails from './components/EditCourseDetails';
 import UserSignUp from './components/UserSignUp';
 import UserSignIn from './components/UserSignIn';
 import UserSignOut from './components/UserSignOut';
+import PrivateRoute from './components/PrivateRoute';
+import DeleteCourse from './components/DeleteCourse';
+
+const DeleteCourseWithRouter = withRouter(DeleteCourse);
 
 
 const cookies = new Cookies();
@@ -29,7 +34,10 @@ const cookies = new Cookies();
 
 class App extends Component {
   state = {
-    user: {}
+    user: {
+      authenticated: false
+    },
+    redirect: ""
   };
 
   componentDidMount() {
@@ -38,13 +46,19 @@ class App extends Component {
     this.userSignIn({ emailAddress, password })
   }
 
-  userSignUp = (form) => {
-    debugger;
-    axios.post('http://localhost:5000/api/users', { ...form })
+  userSignUp = async (form) => {
+    await axios.post('http://localhost:5000/api/users', { ...form })
       .then((response) => {
-        console.log(response);
+        console.log('form: ', form);
+        console.log('response: ', response);
+        this.setState({user: {
+          authenticated: true,
+          emailAddress: form.emailAddress,
+          password: form.password,
+          firstName: form.firstName,
+          lastName: form.lastName
+        }})
       }, (error) => {
-        debugger;
         console.log(error);
       });
   }
@@ -60,8 +74,8 @@ class App extends Component {
       if (response.status === 200) {
         console.log('logging in: ', response);
         response.data.user.password = password;
+        response.data.user.authenticated = true;
         this.setState({user: response.data.user});
-        
 
         cookies.set('emailAddress', emailAddress, { path: '/' });
         cookies.set('password', password, { path: '/' })
@@ -74,10 +88,12 @@ class App extends Component {
   }
 
   userSignOut = () => {
-    this.setState({user: {}}); 
+    this.setState({user: {
+      authenticated: false
+    }}); 
   }
 
-  saveCourse = (course, purpose) => {
+  saveCourse = async (course, purpose) => {
     if (purpose === "create") {
       const { emailAddress, password } = this.state.user;
       const { 
@@ -85,7 +101,7 @@ class App extends Component {
         description,
         estimatedTime,
         materialsNeeded } = course;
-      axios({
+      const response = await axios({
         method: 'post',
         url: 'http://localhost:5000/api/courses',
         headers: {
@@ -97,7 +113,11 @@ class App extends Component {
           estimatedTime,
           materialsNeeded
         }
-      })
+      });
+      console.log('received response: ', response)
+        return response;
+
+
 
 
     } else if (purpose === "update") {
@@ -110,7 +130,7 @@ class App extends Component {
           estimatedTime,
           materialsNeeded } = course;
 
-        axios({
+        const response = await axios({
           method: "put",
           url: `http://localhost:5000/api/courses/${course.id}`,
           headers: {
@@ -123,17 +143,15 @@ class App extends Component {
             materialsNeeded
           }
         })
-        .then(response => {
-          return { response: {
-            status: 204,
-            message: "Update succeeded"
-          }}
-        })
+        console.log('received response: ', response)
+        return response;
+
+
       } else { //user does not have permission to update course
-        return {response: {
+        return {
           status: 401,
           message: "User does not own this course"
-        }}
+        }
       }
     }
   }
@@ -141,6 +159,11 @@ class App extends Component {
 
 
   render() {
+    if (this.state.redirect) {
+      return (
+        <Redirect to={this.state.redirect} />
+      )
+    }
     return (
       <BrowserRouter>
         <div className="App">
@@ -151,9 +174,15 @@ class App extends Component {
             <Route exact path="/courses" render={() => <Courses user={this.state.user}/>} />
 
             {/* create new course */}
-            <Route exact path="/courses/new" render={props => (
-              <EditCourseDetails purpose="create" saveCourse={this.saveCourse} />
+            <PrivateRoute exact path="/courses/new" user={this.state.user} render={props => (
+              <EditCourseDetails 
+                purpose="create" 
+                saveCourse={this.saveCourse} 
+                history={props.history}
+                user={this.state.user}
+              />
             )} />
+
 
             {/* view individual course details */}
             <Route exact path="/courses/:courseId" 
@@ -162,19 +191,36 @@ class App extends Component {
                 user={this.state.user} />)} />
 
             {/* update individual course details */}
-            <Route exact path="/courses/:courseId/update"
+            <PrivateRoute exact path="/courses/:courseId/update" user={this.state.user}
               render={props => (
                 <EditCourseDetails 
                   match={props.match} 
-                  purpose="update" 
+                  purpose="update"
                   saveCourse={this.saveCourse}
                   user={this.state.user} />)} />
+
+            {/* delete individual course */}
+            <PrivateRoute exact path="/courses/:courseId/delete" user={this.state.user}
+              render={props => {
+                console.log(this.state.user)
+                return <DeleteCourseWithRouter 
+                  match={props.match} 
+                  user={this.state.user} />}} />
 
             {/* sign up for a user account */}
             <Route exact path="/signup" render={() => <UserSignUp userSignUp={this.userSignUp} />} />
 
             {/* sign in to an existing user account */}
-            <Route exact path="/signin" render={(props) => <UserSignIn userSignIn={this.userSignIn} history={props.history} />} />
+            <Route exact path="/signin"
+              render={(props) => {
+                return (
+                  <UserSignIn
+                    userSignIn={this.userSignIn}
+                    history={props.history}
+                    user={this.state.user} />
+                )
+              }
+              } />
 
             {/* sign out user */}
             <Route exact path="/signout" render={() => <UserSignOut userSignOut={this.userSignOut} cookies={cookies} /> } />
