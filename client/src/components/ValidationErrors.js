@@ -1,19 +1,15 @@
-import React from 'react';
+import React from "react";
 
 export default function validationErrors(props) {
   const { errors } = props;
   if (errors) {
-    const errorMessages = errors.map(error => (
-      <li>{error}</li>
-    ));
+    const errorMessages = errors.map((error) => <li>{error}</li>);
     return (
       <div className="validation-errors">
-        <ul>
-          {errorMessages}
-        </ul>
+        <ul>{errorMessages}</ul>
       </div>
-    )
+    );
   } else {
-    return (<div></div>)
+    return <div></div>;
   }
 }
