@@ -1,39 +1,37 @@
-import React, { Component } from 'react';
-import { Link, Redirect} from 'react-router-dom';
-import ValidationErrors from './ValidationErrors';
+import React, { Component } from "react";
+import { Link, Redirect } from "react-router-dom";
+import ValidationErrors from "./ValidationErrors";
 
 export default class UserSignIn extends Component {
   state = {
     user: {
       emailAddress: "",
-      password: ""
+      password: "",
     },
-    validationErrors: []
-  }
+    validationErrors: [],
+  };
 
-  onChange = e => {
-    const {user} = this.state;
+  onChange = (e) => {
+    const { user } = this.state;
     user[e.target.name] = e.target.value;
     this.setState({ user });
-  }
+  };
 
-  submitForm = e => {
+  submitForm = (e) => {
     e.preventDefault();
-    const response = this.props.userSignIn(this.state.user)
-    if (response === false) {
-      this.setState({ validationErrors: ['email or password'] })
+    const response = this.props.userSignIn(this.state.user);
+    console.log("RESPONSE", response);
+    if (response === true) {
+      this.props.history.push("/courses");
     } else {
-      this.props.history.push('/courses');
+      this.setState({ validationErrors: ["Email or password incorrect"] });
     }
-  }
-
+  };
 
   render() {
     const { user } = this.state;
     if (this.props.user.authenticated) {
-      return (
-        <Redirect to="/courses" />
-      )
+      return <Redirect to="/courses" />;
     } else {
       return (
         <div className="bounds">
@@ -42,19 +40,44 @@ export default class UserSignIn extends Component {
             <div>
               <ValidationErrors errors={this.state.validationErrors} />
               <form onSubmit={this.submitForm}>
-                <div><input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" value={user.emailAddress} onChange={this.onChange} /></div>
-                <div><input id="password" name="password" type="password" className="" placeholder="Password" value={user.password} onChange={this.onChange} /></div>
+                <div>
+                  <input
+                    id="emailAddress"
+                    name="emailAddress"
+                    type="text"
+                    className=""
+                    placeholder="Email Address"
+                    value={user.emailAddress}
+                    onChange={this.onChange}
+                  />
+                </div>
+                <div>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    className=""
+                    placeholder="Password"
+                    value={user.password}
+                    onChange={this.onChange}
+                  />
+                </div>
                 <div className="grid-100 pad-bottom">
-                  <button className="button" type="submit">Sign In</button>
+                  <button className="button" type="submit">
+                    Sign In
+                  </button>
                   <button className="button button-secondary">Cancel</button>
                 </div>
               </form>
             </div>
             <p>&nbsp;</p>
-            <p>Don't have a user account? <Link to="/signup">Click here</Link> to sign up!</p>
+            <p>
+              Don't have a user account? <Link to="/signup">Click here</Link> to
+              sign up!
+            </p>
           </div>
         </div>
-      )
+      );
     }
   }
 }

@@ -54,13 +54,11 @@ class UserSignUp extends Component {
     });
 
     if (this.state.validationErrors.length === 0) {
-      console.log(
-        "About to send it. (Val errors:",
-        this.state.validationErrors
-      );
       const { form } = this.state;
       form.emailAddress = form.emailAddress.toLowerCase();
       await this.props.userSignUp(form);
+
+      //redirect to main page
       this.props.history.push("/courses");
     }
   };

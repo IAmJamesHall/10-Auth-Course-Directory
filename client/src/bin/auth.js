@@ -14,6 +14,7 @@ const getAuthHeaders = (emailAddress, password) => {
  * send credentials to the database to sign up a user
  * sets state with
  * @param {object} form - user sign-up form
+ * @return {object} signed-up user
  */
 const userSignUp = async (form) => {
   await axios
@@ -21,7 +22,7 @@ const userSignUp = async (form) => {
     .then((response) => {
       console.log("form: ", form);
       console.log("response: ", response);
-      this.setState({
+      return {
         user: {
           authenticated: true,
           emailAddress: form.emailAddress,
@@ -29,10 +30,11 @@ const userSignUp = async (form) => {
           firstName: form.firstName,
           lastName: form.lastName,
         },
-      });
+      };
     })
     .catch((error) => {
       console.log(error);
+      return false;
     });
 };
 
@@ -40,28 +42,25 @@ const userSignUp = async (form) => {
  * authenticates user credentials with server
  * if favorable response, sets user in state & cookies
  * @param {object} form - user sign-in form
+ * @return {object} authenticated user
  */
-const userSignIn = (form) => {
+const userSignIn = async (form) => {
   const { emailAddress, password } = form;
-  axios
-    .get("http://localhost:5000/api/users", {
+  try {
+    const response = await axios.get("http://localhost:5000/api/users", {
       headers: getAuthHeaders(emailAddress, password),
-    })
-    .then((response) => {
-      if (response.status === 200) {
-        console.log("logging in: ", response);
-        response.data.user.password = password;
-        response.data.user.authenticated = true;
-        this.setState({ user: response.data.user });
-
-        cookies.set("emailAddress", emailAddress, { path: "/" });
-        cookies.set("password", password, { path: "/" });
-        return true;
-      }
-    })
-    .catch((error) => {
-      return false;
     });
+
+    if (response.status === 200) {
+      console.log("logging in: ", response);
+      response.data.user.password = password;
+      response.data.user.authenticated = true;
+      return { user: response.data.user };
+    }
+  } catch (error) {
+    console.log("Error in auth.js's userSignIn", error);
+    return false;
+  }
 };
 
 function userSignOut() {

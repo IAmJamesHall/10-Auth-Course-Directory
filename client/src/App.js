@@ -48,8 +48,36 @@ class App extends Component {
   componentDidMount() {
     const emailAddress = cookies.get("emailAddress");
     const password = cookies.get("password");
-    userSignIn({ emailAddress, password });
+    this.signIn({ emailAddress, password });
   }
+
+  signUp = (form) => {
+    const result = userSignUp(form);
+    if (result) {
+      this.setState(result);
+    }
+  };
+
+  signIn = async (form) => {
+    const result = await userSignIn(form);
+    console.log("result: ", result);
+    if (result) {
+      this.setState(result);
+
+      cookies.set("emailAddress", form.emailAddress, { path: "/" });
+      cookies.set("password", form.password, { path: "/" });
+    } else {
+      console.log("User not authenticated properly");
+    }
+  };
+
+  signOut = () => {
+    this.setState({
+      user: {
+        authenticated: false,
+      },
+    });
+  };
 
   saveCourse = async (course, purpose) => {
     if (purpose === "create") {
@@ -177,7 +205,7 @@ class App extends Component {
             <Route
               exact
               path="/signup"
-              render={() => <UserSignUp userSignUp={userSignUp} />}
+              render={() => <UserSignUp userSignUp={this.signUp} />}
             />
 
             {/* sign in to an existing user account */}
@@ -187,7 +215,7 @@ class App extends Component {
               render={(props) => {
                 return (
                   <UserSignIn
-                    userSignIn={userSignIn}
+                    userSignIn={this.signIn}
                     history={props.history}
                     user={this.state.user}
                   />
@@ -200,7 +228,7 @@ class App extends Component {
               exact
               path="/signout"
               render={() => (
-                <UserSignOut userSignOut={userSignOut} cookies={cookies} />
+                <UserSignOut userSignOut={this.signOut} cookies={cookies} />
               )}
             />
 
