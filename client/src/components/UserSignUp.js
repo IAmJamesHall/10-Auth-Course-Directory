@@ -34,14 +34,17 @@ class UserSignUp extends Component {
     //delete current form validation errors
     this.setState({ validationErrors: [] });
 
+    const validationErrors = [];
+
     // check that password was correctly entered twice
     if (form.password !== form.confirmPassword) {
       console.log("form.password:", form.password);
       console.log("form.confirmPassword", form.confirmPassword);
-      await this.addValidationError("Passwords do not match");
+      validationErrors.push("Passwords do not match");
     }
 
     // validate data
+
     Object.keys(form).forEach(async (formElement) => {
       if (this.state.form[formElement] === "") {
         //convert camelCase to caps case
@@ -49,17 +52,19 @@ class UserSignUp extends Component {
         var prettyFormElement =
           result.charAt(0).toUpperCase() + result.slice(1);
 
-        await this.addValidationError(`${prettyFormElement} cannot be empty`);
+        validationErrors.push(`${prettyFormElement} cannot be empty`);
       }
     });
 
-    if (this.state.validationErrors.length === 0) {
+    if (validationErrors.length === 0) {
       const { form } = this.state;
       form.emailAddress = form.emailAddress.toLowerCase();
       await this.props.userSignUp(form);
 
       //redirect to main page
       this.props.history.push("/courses");
+    } else {
+      this.setState({ validationErrors });
     }
   };
 

@@ -17,25 +17,25 @@ const getAuthHeaders = (emailAddress, password) => {
  * @return {object} signed-up user
  */
 const userSignUp = async (form) => {
-  await axios
-    .post("http://localhost:5000/api/users", { ...form })
-    .then((response) => {
-      console.log("form: ", form);
-      console.log("response: ", response);
-      return {
-        user: {
-          authenticated: true,
-          emailAddress: form.emailAddress,
-          password: form.password,
-          firstName: form.firstName,
-          lastName: form.lastName,
-        },
-      };
-    })
-    .catch((error) => {
-      console.log(error);
-      return false;
+  try {
+    const response = await axios.post("http://localhost:5000/api/users", {
+      ...form,
     });
+    console.log("form: ", form);
+    console.log("response: ", response);
+    return {
+      user: {
+        authenticated: true,
+        emailAddress: form.emailAddress,
+        password: form.password,
+        firstName: form.firstName,
+        lastName: form.lastName,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
 
 /**

@@ -51,10 +51,11 @@ class App extends Component {
     this.signIn({ emailAddress, password });
   }
 
-  signUp = (form) => {
-    const result = userSignUp(form);
+  signUp = async (form) => {
+    const result = await userSignUp(form);
+    console.log(result);
     if (result) {
-      this.setState(result);
+      this.signIn(form);
     }
   };
 
