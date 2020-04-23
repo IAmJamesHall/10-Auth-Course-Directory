@@ -1,9 +1,10 @@
 import React from "react";
 
-export default function validationErrors(props) {
-  const { errors } = props;
+export default function ValidationErrors({ errors }) {
   if (errors) {
-    const errorMessages = errors.map((error) => <li>{error}</li>);
+    const errorMessages = errors.map((error, index) => {
+      return <li key={index}>{error}</li>;
+    });
     return (
       <div className="validation-errors">
         <ul>{errorMessages}</ul>

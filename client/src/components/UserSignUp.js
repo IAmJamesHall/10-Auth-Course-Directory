@@ -59,10 +59,16 @@ class UserSignUp extends Component {
     if (validationErrors.length === 0) {
       const { form } = this.state;
       form.emailAddress = form.emailAddress.toLowerCase();
-      await this.props.userSignUp(form);
+      const response = await this.props.userSignUp(form);
 
-      //redirect to main page
-      this.props.history.push("/courses");
+      if (response) {
+        //redirect to main page
+        this.props.history.push("/courses");
+      } else {
+        this.setState({
+          validationErrors: ["Unknown problem. Please try again"],
+        });
+      }
     } else {
       this.setState({ validationErrors });
     }

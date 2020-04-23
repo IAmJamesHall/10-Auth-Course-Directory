@@ -56,6 +56,9 @@ class App extends Component {
     console.log(result);
     if (result) {
       this.signIn(form);
+      return true;
+    } else {
+      return false;
     }
   };
 

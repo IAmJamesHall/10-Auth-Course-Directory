@@ -55,17 +55,17 @@ class EditCourseDetails extends Component {
   };
 
   cancelForm = (e) => {
-    this.props.history.push("/courses");
+    this.props.history.push(`/courses/${this.state.course.id}`);
   };
 
   submitForm = (e) => {
     e.preventDefault();
     const { title, description } = this.state.course;
-    this.setState({ validationErrors: [] });
-    const validationErrors = [...this.state.validationErrors];
+    const validationErrors = [];
 
-    if (title === "") validationErrors.push("Title");
-    if (description === "") validationErrors.push("Description");
+    if (title === "") validationErrors.push("Title cannot be empty");
+    if (description === "")
+      validationErrors.push("Description cannot be empty");
 
     this.setState({ validationErrors }, async () => {
       if (this.state.validationErrors.length === 0) {
