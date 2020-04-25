@@ -77,7 +77,8 @@ class EditCourseDetails extends Component {
         if (response.status === 200) {
           this.props.history.push(`/courses/${response.data.id}`);
         } else {
-          // TODO: ERROR UPDATING COURSE
+          // error saving course
+          this.props.history.push("/error");
         }
       }
     });

@@ -9,6 +9,7 @@ export default class UserSignIn extends Component {
       password: "",
     },
     validationErrors: [],
+    redirectPath: "",
   };
 
   onChange = (e) => {
@@ -17,12 +18,16 @@ export default class UserSignIn extends Component {
     this.setState({ user });
   };
 
-  submitForm = (e) => {
+  submitForm = async (e) => {
     e.preventDefault();
-    const response = this.props.userSignIn(this.state.user);
+    const response = await this.props.userSignIn(this.state.user);
     console.log("RESPONSE", response);
     if (response === true) {
-      this.props.history.push("/courses");
+      const from = this.props.location.state.from;
+      console.log("FROM:", from);
+      from
+        ? this.props.history.push(from)
+        : this.props.history.push("/courses");
     } else {
       this.setState({ validationErrors: ["Email or password incorrect"] });
     }

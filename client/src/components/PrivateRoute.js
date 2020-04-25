@@ -5,7 +5,6 @@ const PrivateRoute = ({ render: RenderComponent, user, ...rest }) => (
   <Route
     {...rest}
     render={(props) => {
-      console.log("PrivateRoute: ", user);
       user = user || {};
       if (user.authenticated) {
         props.user = user; //pass authenticated user down to component
@@ -15,7 +14,7 @@ const PrivateRoute = ({ render: RenderComponent, user, ...rest }) => (
         return (
           <Redirect
             to={{
-              pathname: "/signin",
+              pathname: "/forbidden",
               state: { from: props.location },
             }}
           />

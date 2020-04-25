@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import axios from "axios";
 import base64 from "base-64";
 import Cookies from "universal-cookie";
-import auth from "./bin/auth";
 
 import "./global.css";
 
@@ -27,6 +26,10 @@ import UserSignIn from "./components/UserSignIn";
 import UserSignOut from "./components/UserSignOut";
 import PrivateRoute from "./components/PrivateRoute";
 import DeleteCourse from "./components/DeleteCourse";
+
+import NotFound from "./components/NotFound";
+import Forbidden from "./components/Forbidden";
+import UnhandledError from "./components/UnhandledError";
 
 import {
   getAuthHeaders,
@@ -70,8 +73,10 @@ class App extends Component {
 
       cookies.set("emailAddress", form.emailAddress, { path: "/" });
       cookies.set("password", form.password, { path: "/" });
+
+      return true;
     } else {
-      console.log("User not authenticated properly");
+      return false;
     }
   };
 
@@ -128,7 +133,7 @@ class App extends Component {
         console.log("received response: ", response);
         return response;
       } else {
-        //user does not have permission to update course
+        // user does not have permission to update course
         return {
           status: 401,
           message: "User does not own this course",
@@ -222,6 +227,7 @@ class App extends Component {
                     userSignIn={this.signIn}
                     history={props.history}
                     user={this.state.user}
+                    {...props}
                   />
                 );
               }}
@@ -237,7 +243,16 @@ class App extends Component {
             />
 
             {/* redirect '/' route to /courses */}
-            <Route path="/" render={() => <Redirect to="/courses" />} />
+            <Route exact path="/" render={() => <Redirect to="/courses" />} />
+
+            {/* forbidden */}
+            <Route path="/forbidden" component={Forbidden} />
+
+            {/*error route */}
+            <Route path="/error" component={UnhandledError} />
+
+            {/*catch all other routes */}
+            <Route render={() => <NotFound />} />
           </Switch>
         </div>
       </BrowserRouter>
