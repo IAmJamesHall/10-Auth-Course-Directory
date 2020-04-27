@@ -6,13 +6,7 @@ import Cookies from "universal-cookie";
 
 import "./global.css";
 
-import {
-  BrowserRouter,
-  Route,
-  Switch,
-  Redirect,
-  withRouter,
-} from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
 // Import components
 import Header from "./components/Header";
@@ -31,12 +25,7 @@ import NotFound from "./components/NotFound";
 import Forbidden from "./components/Forbidden";
 import UnhandledError from "./components/UnhandledError";
 
-import {
-  getAuthHeaders,
-  userSignUp,
-  userSignIn,
-  userSignOut,
-} from "./bin/auth";
+import { userSignUp, userSignIn } from "./bin/auth";
 
 const cookies = new Cookies();
 
@@ -133,7 +122,7 @@ class App extends Component {
         console.log("received response: ", response);
         return response;
       } else {
-        // user does not have permission to update course
+        //user does not have permission to update course
         return {
           status: 401,
           message: "User does not own this course",
@@ -202,12 +191,9 @@ class App extends Component {
               exact
               path="/courses/:courseId/delete"
               user={this.state.user}
-              render={(props) => {
-                console.log(this.state.user);
-                return (
-                  <DeleteCourse match={props.match} user={this.state.user} />
-                );
-              }}
+              render={(props) => (
+                <DeleteCourse match={props.match} user={this.state.user} />
+              )}
             />
 
             {/* sign up for a user account */}

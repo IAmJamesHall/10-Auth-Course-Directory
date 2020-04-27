@@ -63,6 +63,7 @@ class EditCourseDetails extends Component {
     const { title, description } = this.state.course;
     const validationErrors = [];
 
+    // check for required fields
     if (title === "") validationErrors.push("Title cannot be empty");
     if (description === "")
       validationErrors.push("Description cannot be empty");
@@ -77,8 +78,10 @@ class EditCourseDetails extends Component {
         if (response.status === 200) {
           this.props.history.push(`/courses/${response.data.id}`);
         } else {
-          // error saving course
-          this.props.history.push("/error");
+          console.log("error saving course");
+          this.setState({
+            validationErrors: ["Error saving course. Please try again."],
+          });
         }
       }
     });
