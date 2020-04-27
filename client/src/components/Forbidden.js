@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 export default function Forbidden(props) {
   return (
     <div className="not-found">
-      <h1>Forbidden</h1>
+      <h1>To access this page, you must sign in</h1>
       <Link
         className="button"
         to={{
