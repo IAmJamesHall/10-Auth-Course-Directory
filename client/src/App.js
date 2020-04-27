@@ -6,7 +6,13 @@ import Cookies from "universal-cookie";
 
 import "./global.css";
 
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Switch,
+  Redirect,
+  withRouter,
+} from "react-router-dom";
 
 // Import components
 import Header from "./components/Header";
@@ -25,7 +31,12 @@ import NotFound from "./components/NotFound";
 import Forbidden from "./components/Forbidden";
 import UnhandledError from "./components/UnhandledError";
 
-import { userSignUp, userSignIn } from "./bin/auth";
+import {
+  getAuthHeaders,
+  userSignUp,
+  userSignIn,
+  userSignOut,
+} from "./bin/auth";
 
 const cookies = new Cookies();
 

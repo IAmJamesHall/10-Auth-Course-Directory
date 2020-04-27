@@ -23,11 +23,10 @@ export default class UserSignIn extends Component {
     const response = await this.props.userSignIn(this.state.user);
     console.log("RESPONSE", response);
     if (response === true) {
-      const from = this.props.location.state.from;
+      const locationState = this.props.location.state || {};
+      const from = locationState.from || "/courses";
       console.log("FROM:", from);
-      from
-        ? this.props.history.push(from)
-        : this.props.history.push("/courses");
+      this.props.history.push(from);
     } else {
       this.setState({ validationErrors: ["Email or password incorrect"] });
     }
