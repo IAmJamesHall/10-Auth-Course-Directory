@@ -4,6 +4,11 @@ import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 
+/**
+ * helper function to create the auth headers for use in axios requests
+ * @param {string} emailAddress
+ * @param {string} password
+ */
 const getAuthHeaders = (emailAddress, password) => {
   return {
     Authorization: `Basic ${base64.encode(`${emailAddress}:${password}`)}`,
@@ -16,7 +21,7 @@ const getAuthHeaders = (emailAddress, password) => {
  * @param {object} form - user sign-up form
  * @return {object} signed-up user
  */
-const userSignUp = async (form) => {
+const authSignUp = async (form) => {
   try {
     const response = await axios.post("http://localhost:5000/api/users", {
       ...form,
@@ -41,7 +46,7 @@ const userSignUp = async (form) => {
  * @param {object} form - user sign-in form
  * @return {object} authenticated user
  */
-const userSignIn = async (form) => {
+const authSignIn = async (form) => {
   const { emailAddress, password } = form;
   try {
     const response = await axios.get("http://localhost:5000/api/users", {
@@ -58,12 +63,4 @@ const userSignIn = async (form) => {
   }
 };
 
-function userSignOut() {
-  this.setState({
-    user: {
-      authenticated: false,
-    },
-  });
-}
-
-export { getAuthHeaders, userSignUp, userSignIn, userSignOut };
+export { getAuthHeaders, authSignUp, authSignIn };

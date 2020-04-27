@@ -1,6 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+/**
+ * display user-friendly error message for forbidden path
+ */
 export default function Forbidden(props) {
   return (
     <div className="not-found">

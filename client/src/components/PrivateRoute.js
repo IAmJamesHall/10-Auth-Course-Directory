@@ -1,6 +1,9 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 
+/**
+ * allows access to private routes only if the user is authenticated
+ */
 const PrivateRoute = ({ render: RenderComponent, user, ...rest }) => (
   <Route
     {...rest}
@@ -14,7 +17,7 @@ const PrivateRoute = ({ render: RenderComponent, user, ...rest }) => (
           <Redirect
             to={{
               pathname: "/forbidden",
-              state: { from: props.location },
+              state: { from: props.location }, // pass attempted path
             }}
           />
         );

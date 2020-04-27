@@ -1,3 +1,8 @@
+/* Coded by James Hall
+ * as part of the TeamTreehouse Full Stack JS final project
+ * Apr 27, 2020
+ */
+
 import React, { Component } from "react";
 
 import axios from "axios";
@@ -25,7 +30,7 @@ import NotFound from "./components/NotFound";
 import Forbidden from "./components/Forbidden";
 import UnhandledError from "./components/UnhandledError";
 
-import { userSignUp, userSignIn, userSignOut } from "./bin/auth";
+import { authSignUp, authSignIn, getAuthHeaders } from "./bin/auth";
 
 const cookies = new Cookies();
 
@@ -34,17 +39,20 @@ class App extends Component {
     user: {
       authenticated: false,
     },
-    redirect: "",
   };
 
   componentDidMount() {
+    // get credentials from cookies, and attempt to sign in with them
     const emailAddress = cookies.get("emailAddress");
     const password = cookies.get("password");
     this.signIn({ emailAddress, password });
   }
 
+  /**
+   * sign up for user account
+   */
   signUp = async (form) => {
-    const result = await userSignUp(form);
+    const result = await authSignUp(form);
     if (result) {
       this.signIn(form);
       return true;
@@ -53,8 +61,11 @@ class App extends Component {
     }
   };
 
+  /**
+   * sign in to existing user account
+   */
   signIn = async (form) => {
-    const result = await userSignIn(form);
+    const result = await authSignIn(form);
     if (result) {
       this.setState(result);
 
@@ -67,6 +78,9 @@ class App extends Component {
     }
   };
 
+  /**
+   * sign out of user account
+   */
   signOut = () => {
     this.setState({
       user: {
@@ -75,61 +89,46 @@ class App extends Component {
     });
   };
 
+  /**
+   * create or update existing course
+   */
   saveCourse = async (course, purpose) => {
-    if (purpose === "create") {
-      const { emailAddress, password } = this.state.user;
-      const { title, description, estimatedTime, materialsNeeded } = course;
-      const response = await axios({
-        method: "post",
-        url: "http://localhost:5000/api/courses",
-        headers: {
-          Authorization: `Basic ${base64.encode(
-            `${emailAddress}:${password}`
-          )}`,
-        },
-        data: {
-          title,
-          description,
-          estimatedTime,
-          materialsNeeded,
-        },
-      });
-      return response;
-    } else if (purpose === "update") {
-      const { emailAddress, password } = this.state.user;
-      if (course.User.emailAddress === emailAddress) {
-        const { title, description, estimatedTime, materialsNeeded } = course;
+    const { emailAddress, password } = this.state.user;
+    const { title, description, estimatedTime, materialsNeeded } = course;
+    let method, url;
 
-        const response = await axios({
-          method: "put",
-          url: `http://localhost:5000/api/courses/${course.id}`,
-          headers: {
-            Authorization: `Basic ${base64.encode(
-              `${emailAddress}:${password}`
-            )}`,
-          },
-          data: {
-            title,
-            description,
-            estimatedTime,
-            materialsNeeded,
-          },
-        });
-        return response;
-      } else {
-        //user does not have permission to update course
+    if (purpose === "create") {
+      method = "post";
+      url = "http://localhost:5000/api/courses";
+    } else if (purpose === "update") {
+      // check that user owns course
+      if (course.User.emailAddress !== emailAddress) {
         return {
           status: 401,
           message: "User does not own this course",
         };
+      } else {
+        method = "put";
+        url = `http://localhost:5000/api/courses/${course.id}`;
       }
     }
+    // send put/post request
+    const response = await axios({
+      method,
+      url,
+      headers: getAuthHeaders(emailAddress, password),
+      data: {
+        title,
+        description,
+        estimatedTime,
+        materialsNeeded,
+      },
+    });
+
+    return response;
   };
 
   render() {
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />;
-    }
     return (
       <BrowserRouter>
         <div className="App">

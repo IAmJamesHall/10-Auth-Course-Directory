@@ -17,6 +17,9 @@ export default class CourseDetails extends Component {
     this.setState({ course: data });
   }
 
+  /**
+   * determine if user owns the current course to show the update/delete buttons
+   */
   isUserOwner() {
     try {
       const user = this.state.course.User;
@@ -79,6 +82,7 @@ export default class CourseDetails extends Component {
             <div className="grid-25 grid-right">
               <div className="course--stats">
                 <ul className="course--stats--list">
+                  {/* only show estimated time if it has been specified */}
                   {(() => {
                     if (course.estimatedTime) {
                       return (
@@ -90,7 +94,8 @@ export default class CourseDetails extends Component {
                     }
                   })()}
 
-                  {(() => {√
+                  {/* only show materials needed if they have been specified */}
+                  {(() => {
                     if (course.materialsNeeded) {
                       return (
                         <li className="course--stats--list--item">

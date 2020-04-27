@@ -42,12 +42,13 @@ class EditCourseDetails extends Component {
       });
     }
 
-    // capitalize purpose
+    // capitalize purpose for display
     const purpose =
       this.props.purpose.charAt(0).toUpperCase() + this.props.purpose.slice(1);
     this.setState({ purpose });
   }
 
+  // update state to reflect form
   onChange = (e) => {
     const course = this.state.course;
     course[e.target.name] = e.target.value;
@@ -58,7 +59,7 @@ class EditCourseDetails extends Component {
     this.props.history.push(`/courses/${this.state.course.id}`);
   };
 
-  submitForm = (e) => {
+  submitForm = async (e) => {
     e.preventDefault();
     const { title, description } = this.state.course;
     const validationErrors = [];
@@ -68,21 +69,23 @@ class EditCourseDetails extends Component {
     if (description === "")
       validationErrors.push("Description cannot be empty");
 
-    this.setState({ validationErrors }, async () => {
-      if (this.state.validationErrors.length === 0) {
-        const response = await this.props.saveCourse(
-          this.state.course,
-          this.props.purpose
-        );
-        if (response.status === 200) {
-          this.props.history.push(`/courses/${response.data.id}`);
-        } else {
-          this.setState({
-            validationErrors: ["Error saving course. Please try again."],
-          });
-        }
+    // check for validation errors
+    if (validationErrors.length === 0) {
+      const response = await this.props.saveCourse(
+        this.state.course,
+        this.props.purpose
+      );
+      // if good response
+      if (response.status === 200) {
+        this.props.history.push(`/courses/${response.data.id}`);
+      } else {
+        this.setState({
+          validationErrors: ["Error saving course. Please try again."],
+        });
       }
-    });
+    } else {
+      this.setState({ validationErrors });
+    }
   };
 
   render() {

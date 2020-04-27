@@ -13,6 +13,7 @@ export default class UserSignIn extends Component {
   };
 
   onChange = (e) => {
+    //update state to reflect form
     const { user } = this.state;
     user[e.target.name] = e.target.value;
     this.setState({ user });
@@ -20,8 +21,11 @@ export default class UserSignIn extends Component {
 
   submitForm = async (e) => {
     e.preventDefault();
+    //attempt sign-in
     const response = await this.props.userSignIn(this.state.user);
     if (response === true) {
+      // if a protected route was previously attempted, redirect to it now
+      // otherwise redirect to '/courses'
       const locationState = this.props.location.state || {};
       const from = locationState.from || "/courses";
       this.props.history.push(from);

@@ -1,6 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+/**
+ * displays user-friendly message for unhandled errors
+ */
 export default function UnhandledError() {
   return (
     <div className="not-found">
