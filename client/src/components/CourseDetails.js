@@ -1,47 +1,55 @@
-import React, { Component } from 'react';
-import {Redirect, Link} from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
-import axios from 'axios';
+import React, { Component } from "react";
+import { Redirect, Link } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import axios from "axios";
 // props.match.params.courseId
 
 export default class CourseDetails extends Component {
-
   state = {
-    course: {}
-  }
+    course: {},
+  };
 
   async componentDidMount() {
     const { courseId } = this.props.match.params;
-    const {data} = await axios.get(`http://localhost:5000/api/courses/${courseId}`)
-    this.setState({course: data});
+    const { data } = await axios.get(
+      `http://localhost:5000/api/courses/${courseId}`
+    );
+    this.setState({ course: data });
   }
 
   isUserOwner() {
     try {
       const user = this.state.course.User;
-      console.log(user);
-  
+
       const authenticatedUser = this.props.user.userId;
       const ownerUser = user.id;
       if (authenticatedUser === ownerUser) {
         return (
           <span>
-            <Link className="button" to={`/courses/${this.state.course.id}/update`}>Update Course</Link>
-            <Link className="button" to={`/courses/${this.state.course.id}/delete`}>Delete Course</Link>
+            <Link
+              className="button"
+              to={`/courses/${this.state.course.id}/update`}
+            >
+              Update Course
+            </Link>
+            <Link
+              className="button"
+              to={`/courses/${this.state.course.id}/delete`}
+            >
+              Delete Course
+            </Link>
           </span>
-        )
+        );
       } else {
-        return <span></span>
+        return <span></span>;
       }
     } catch {
-      return <span></span>
+      return <span></span>;
     }
-    
   }
 
   render() {
     const course = this.state.course;
-    console.log(course);
     if (Object.keys(course).length > 0) {
       return (
         <div>
@@ -49,7 +57,10 @@ export default class CourseDetails extends Component {
             <div className="bounds">
               <div className="grid-100">
                 {this.isUserOwner()}
-                <Link className="button button-secondary" to="/">Return to List</Link></div>
+                <Link className="button button-secondary" to="/">
+                  Return to List
+                </Link>
+              </div>
             </div>
           </div>
           <div className="bounds course--detail">
@@ -57,46 +68,46 @@ export default class CourseDetails extends Component {
               <div className="course--header">
                 <h4 className="course--label">Course</h4>
                 <h3 className="course--title">{course.title}</h3>
-                <p>By {course.User.firstName} {course.User.lastName}</p>
+                <p>
+                  By {course.User.firstName} {course.User.lastName}
+                </p>
               </div>
-              <div className="course--description"><ReactMarkdown source={course.description} /></div>
+              <div className="course--description">
+                <ReactMarkdown source={course.description} />
+              </div>
             </div>
             <div className="grid-25 grid-right">
               <div className="course--stats">
                 <ul className="course--stats--list">
                   {(() => {
-                    console.log(course.estimatedTime);
                     if (course.estimatedTime) {
-                      return (<li className="course--stats--list--item">
-                        <h4>Estimated Time</h4>
-                        <h3>{course.estimatedTime}</h3>
-                      </li>)
+                      return (
+                        <li className="course--stats--list--item">
+                          <h4>Estimated Time</h4>
+                          <h3>{course.estimatedTime}</h3>
+                        </li>
+                      );
                     }
                   })()}
 
-                  {(() => {
-                    console.log('course.materialsNeeded: ', course.materialsNeeded)
+                  {(() => {√
                     if (course.materialsNeeded) {
                       return (
                         <li className="course--stats--list--item">
                           <h4>Materials Needed</h4>
                           <ReactMarkdown source={course.materialsNeeded} />
                         </li>
-                      )
+                      );
                     }
                   })()}
-                  
                 </ul>
               </div>
             </div>
           </div>
         </div>
-      )
+      );
     } else {
-      return (
-        <div></div>
-      )
+      return <div></div>;
     }
-    
   }
 }

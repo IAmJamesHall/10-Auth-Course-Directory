@@ -74,11 +74,9 @@ class EditCourseDetails extends Component {
           this.state.course,
           this.props.purpose
         );
-        console.log("response in EditCourseDetails: ", response);
         if (response.status === 200) {
           this.props.history.push(`/courses/${response.data.id}`);
         } else {
-          console.log("error saving course");
           this.setState({
             validationErrors: ["Error saving course. Please try again."],
           });

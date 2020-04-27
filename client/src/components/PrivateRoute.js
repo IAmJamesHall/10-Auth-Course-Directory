@@ -8,7 +8,6 @@ const PrivateRoute = ({ render: RenderComponent, user, ...rest }) => (
       user = user || {};
       if (user.authenticated) {
         props.user = user; //pass authenticated user down to component
-        console.log("passing props: ", props);
         return <RenderComponent {...props} />;
       } else {
         return (

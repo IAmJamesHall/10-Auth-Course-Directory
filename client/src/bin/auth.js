@@ -21,8 +21,6 @@ const userSignUp = async (form) => {
     const response = await axios.post("http://localhost:5000/api/users", {
       ...form,
     });
-    console.log("form: ", form);
-    console.log("response: ", response);
     return {
       user: {
         authenticated: true,
@@ -33,7 +31,6 @@ const userSignUp = async (form) => {
       },
     };
   } catch (error) {
-    console.log(error);
     return false;
   }
 };
@@ -52,13 +49,11 @@ const userSignIn = async (form) => {
     });
 
     if (response.status === 200) {
-      console.log("logging in: ", response);
       response.data.user.password = password;
       response.data.user.authenticated = true;
       return { user: response.data.user };
     }
   } catch (error) {
-    console.log("Error in auth.js's userSignIn", error);
     return false;
   }
 };

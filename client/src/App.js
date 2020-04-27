@@ -6,18 +6,13 @@ import Cookies from "universal-cookie";
 
 import "./global.css";
 
-import {
-  BrowserRouter,
-  Route,
-  Switch,
-  Redirect,
-  withRouter,
-} from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
 // Import components
 import Header from "./components/Header";
 
 import Courses from "./components/Courses";
+import DeleteCourse from "./components/DeleteCourse";
 import CourseDetails from "./components/CourseDetails";
 import EditCourseDetails from "./components/EditCourseDetails";
 
@@ -25,18 +20,12 @@ import UserSignUp from "./components/UserSignUp";
 import UserSignIn from "./components/UserSignIn";
 import UserSignOut from "./components/UserSignOut";
 import PrivateRoute from "./components/PrivateRoute";
-import DeleteCourse from "./components/DeleteCourse";
 
 import NotFound from "./components/NotFound";
 import Forbidden from "./components/Forbidden";
 import UnhandledError from "./components/UnhandledError";
 
-import {
-  getAuthHeaders,
-  userSignUp,
-  userSignIn,
-  userSignOut,
-} from "./bin/auth";
+import { userSignUp, userSignIn, userSignOut } from "./bin/auth";
 
 const cookies = new Cookies();
 
@@ -56,7 +45,6 @@ class App extends Component {
 
   signUp = async (form) => {
     const result = await userSignUp(form);
-    console.log(result);
     if (result) {
       this.signIn(form);
       return true;
@@ -67,7 +55,6 @@ class App extends Component {
 
   signIn = async (form) => {
     const result = await userSignIn(form);
-    console.log("result: ", result);
     if (result) {
       this.setState(result);
 
@@ -107,10 +94,8 @@ class App extends Component {
           materialsNeeded,
         },
       });
-      console.log("received response: ", response);
       return response;
     } else if (purpose === "update") {
-      console.log("going to update");
       const { emailAddress, password } = this.state.user;
       if (course.User.emailAddress === emailAddress) {
         const { title, description, estimatedTime, materialsNeeded } = course;
@@ -130,7 +115,6 @@ class App extends Component {
             materialsNeeded,
           },
         });
-        console.log("received response: ", response);
         return response;
       } else {
         //user does not have permission to update course

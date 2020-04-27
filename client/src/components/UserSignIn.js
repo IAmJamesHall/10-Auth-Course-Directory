@@ -21,11 +21,9 @@ export default class UserSignIn extends Component {
   submitForm = async (e) => {
     e.preventDefault();
     const response = await this.props.userSignIn(this.state.user);
-    console.log("RESPONSE", response);
     if (response === true) {
       const locationState = this.props.location.state || {};
       const from = locationState.from || "/courses";
-      console.log("FROM:", from);
       this.props.history.push(from);
     } else {
       this.setState({ validationErrors: ["Email or password incorrect"] });

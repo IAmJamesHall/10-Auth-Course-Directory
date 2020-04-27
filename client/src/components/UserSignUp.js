@@ -28,7 +28,6 @@ class UserSignUp extends Component {
 
   submitForm = async (e) => {
     e.preventDefault();
-    console.log("UserSignUp's submitForm()");
     const { form } = this.state;
 
     //delete current form validation errors
@@ -38,8 +37,6 @@ class UserSignUp extends Component {
 
     // check that password was correctly entered twice
     if (form.password !== form.confirmPassword) {
-      console.log("form.password:", form.password);
-      console.log("form.confirmPassword", form.confirmPassword);
       validationErrors.push("Passwords do not match");
     }
 
