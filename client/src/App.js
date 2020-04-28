@@ -31,6 +31,11 @@ import UnhandledError from "./components/UnhandledError";
 
 import { authSignUp, authSignIn, getAuthHeaders } from "./bin/auth";
 
+/* SERVER LOCATION */
+const serverLocation = "https://treehouse-project9.glitch.me";
+// to run locally, comment the above line and uncomment the below line
+// const serverLocation = "http://localhost:5000";
+
 const cookies = new Cookies();
 
 class App extends Component {
@@ -38,7 +43,7 @@ class App extends Component {
     user: {
       authenticated: false,
     },
-    serverLocation: "https://treehouse-project9.glitch.me",
+    serverLocation,
   };
 
   componentDidMount() {
