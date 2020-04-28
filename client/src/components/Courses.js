@@ -9,7 +9,7 @@ export default class Courses extends Component {
 
   async componentDidMount() {
     // get course list
-    const courses = await axios.get("http://localhost:5000/api/courses");
+    const courses = await axios.get(`${this.props.serverLocation}/api/courses`);
 
     // map courses to a list
     const courseComponents = courses.data.map((course) => (

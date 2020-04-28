@@ -26,7 +26,7 @@ class EditCourseDetails extends Component {
     if (this.props.purpose === "update") {
       const { courseId } = this.props.match.params;
       const course = await axios.get(
-        `http://localhost:5000/api/courses/${courseId}`
+        `${this.props.serverLocation}/api/courses/${courseId}`
       );
       this.setState({ course: course.data });
       this.setState({ user: course.data.User });

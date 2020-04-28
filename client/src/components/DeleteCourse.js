@@ -15,7 +15,7 @@ class DeleteCourse extends Component {
 
     // get course to delete
     const getResponse = await axios.get(
-      `http://localhost:5000/api/courses/${courseId}`
+      `${this.props.serverLocation}/api/courses/${courseId}`
     );
     if (getResponse.status !== 404) {
       // if course exists
@@ -27,7 +27,7 @@ class DeleteCourse extends Component {
           // attempt deleting the course
           await axios({
             method: "delete",
-            url: `http://localhost:5000/api/courses/${courseId}`,
+            url: `${this.props.serverLocation}/api/courses/${courseId}`,
             headers: getAuthHeaders(user.emailAddress, user.password),
           });
           // course successfully deleted

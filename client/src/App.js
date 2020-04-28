@@ -39,6 +39,7 @@ class App extends Component {
     user: {
       authenticated: false,
     },
+    serverLocation: "https://treehouse-project9.glitch.me",
   };
 
   componentDidMount() {
@@ -52,7 +53,7 @@ class App extends Component {
    * sign up for user account
    */
   signUp = async (form) => {
-    const result = await authSignUp(form);
+    const result = await authSignUp(form, this.state.serverLocation);
     if (result) {
       this.signIn(form);
       return true;
@@ -65,7 +66,7 @@ class App extends Component {
    * sign in to existing user account
    */
   signIn = async (form) => {
-    const result = await authSignIn(form);
+    const result = await authSignIn(form, this.state.serverLocation);
     if (result) {
       this.setState(result);
 
@@ -99,7 +100,7 @@ class App extends Component {
 
     if (purpose === "create") {
       method = "post";
-      url = "http://localhost:5000/api/courses";
+      url = `${this.state.serverLocation}/api/courses`;
     } else if (purpose === "update") {
       // check that user owns course
       if (course.User.emailAddress !== emailAddress) {
@@ -109,7 +110,7 @@ class App extends Component {
         };
       } else {
         method = "put";
-        url = `http://localhost:5000/api/courses/${course.id}`;
+        url = `${this.state.serverLocation}/api/courses/${course.id}`;
       }
     }
     // send put/post request
@@ -138,7 +139,12 @@ class App extends Component {
             <Route
               exact
               path="/courses"
-              render={() => <Courses user={this.state.user} />}
+              render={() => (
+                <Courses
+                  user={this.state.user}
+                  serverLocation={this.state.serverLocation}
+                />
+              )}
             />
 
             {/* create new course */}
@@ -152,6 +158,7 @@ class App extends Component {
                   saveCourse={this.saveCourse}
                   history={props.history}
                   user={this.state.user}
+                  serverLocation={this.state.serverLocation}
                 />
               )}
             />
@@ -161,7 +168,11 @@ class App extends Component {
               exact
               path="/courses/:courseId"
               render={(props) => (
-                <CourseDetails match={props.match} user={this.state.user} />
+                <CourseDetails
+                  match={props.match}
+                  user={this.state.user}
+                  serverLocation={this.state.serverLocation}
+                />
               )}
             />
 
@@ -176,6 +187,7 @@ class App extends Component {
                   purpose="update"
                   saveCourse={this.saveCourse}
                   user={this.state.user}
+                  serverLocation={this.state.serverLocation}
                 />
               )}
             />
@@ -186,7 +198,11 @@ class App extends Component {
               path="/courses/:courseId/delete"
               user={this.state.user}
               render={(props) => (
-                <DeleteCourse match={props.match} user={this.state.user} />
+                <DeleteCourse
+                  match={props.match}
+                  user={this.state.user}
+                  serverLocation={this.state.serverLocation}
+                />
               )}
             />
 

@@ -21,9 +21,9 @@ const getAuthHeaders = (emailAddress, password) => {
  * @param {object} form - user sign-up form
  * @return {object} signed-up user
  */
-const authSignUp = async (form) => {
+const authSignUp = async (form, serverLocation) => {
   try {
-    const response = await axios.post("http://localhost:5000/api/users", {
+    const response = await axios.post(`${serverLocation}/api/users`, {
       ...form,
     });
     return {
@@ -44,12 +44,13 @@ const authSignUp = async (form) => {
  * authenticates user credentials with server
  * if favorable response, sets user in state & cookies
  * @param {object} form - user sign-in form
+ * @param {string} serverLocation - url to access the server
  * @return {object} authenticated user
  */
-const authSignIn = async (form) => {
+const authSignIn = async (form, serverLocation) => {
   const { emailAddress, password } = form;
   try {
-    const response = await axios.get("http://localhost:5000/api/users", {
+    const response = await axios.get(`${serverLocation}/api/users`, {
       headers: getAuthHeaders(emailAddress, password),
     });
 
