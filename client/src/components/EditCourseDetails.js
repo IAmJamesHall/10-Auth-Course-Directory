@@ -56,7 +56,13 @@ class EditCourseDetails extends Component {
   };
 
   cancelForm = (e) => {
-    this.props.history.push(`/courses/${this.state.course.id}`);
+    let url;
+    if (this.props.purpose === "create") {
+      url = "/courses";
+    } else {
+      url = `/courses/${this.state.course.id}`;
+    }
+    this.props.history.push(url);
   };
 
   submitForm = async (e) => {

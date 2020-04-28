@@ -53,6 +53,7 @@ const authSignIn = async (form, serverLocation) => {
     const response = await axios.get(`${serverLocation}/api/users`, {
       headers: getAuthHeaders(emailAddress, password),
     });
+    console.log(response);
 
     if (response.status === 200) {
       response.data.user.password = password;

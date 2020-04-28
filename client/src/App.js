@@ -6,12 +6,11 @@
 import React, { Component } from "react";
 
 import axios from "axios";
-import base64 from "base-64";
 import Cookies from "universal-cookie";
 
 import "./global.css";
 
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 
 // Import components
 import Header from "./components/Header";
@@ -131,9 +130,10 @@ class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>
+      <HashRouter>
         <div className="App">
           <Header user={this.state.user} />
+
           <Switch>
             {/* view courses */}
             <Route
@@ -251,7 +251,7 @@ class App extends Component {
             <Route render={() => <NotFound />} />
           </Switch>
         </div>
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }

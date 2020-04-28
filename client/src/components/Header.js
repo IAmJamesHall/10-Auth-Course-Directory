@@ -7,12 +7,12 @@ const Header = ({ user }) => {
   if (!user.emailAddress) {
     loginForm = (
       <nav>
-        <a className="signup" href="/signup">
+        <Link className="signup" to="/signup">
           Sign Up
-        </a>
-        <a className="signin" href="/signin">
+        </Link>
+        <Link className="signin" to="/signin">
           Sign In
-        </a>
+        </Link>
       </nav>
     );
   } else {
