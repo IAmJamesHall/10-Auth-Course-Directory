@@ -1,8 +1,8 @@
 import base64 from "base-64";
 import axios from "axios";
-import Cookies from "universal-cookie";
+// import Cookies from "universal-cookie";
 
-const cookies = new Cookies();
+// const cookies = new Cookies();
 
 /**
  * helper function to create the auth headers for use in axios requests
@@ -23,7 +23,7 @@ const getAuthHeaders = (emailAddress, password) => {
  */
 const authSignUp = async (form, serverLocation) => {
   try {
-    const response = await axios.post(`${serverLocation}/api/users`, {
+    await axios.post(`${serverLocation}/api/users`, {
       ...form,
     });
     return {

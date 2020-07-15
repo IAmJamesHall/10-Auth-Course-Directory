@@ -20,6 +20,10 @@ class UserSignUp extends Component {
     this.setState({ form });
   };
 
+  onCancel = () => {
+    this.props.history.push("/courses");
+  };
+
   addValidationError = async (error) => {
     this.setState((prevState) => ({
       validationErrors: [...prevState.validationErrors, error],
@@ -139,6 +143,12 @@ class UserSignUp extends Component {
               <div className="grid-100 pad-bottom">
                 <button className="button" type="submit">
                   Sign Up
+                </button>
+                <button
+                  className="button button-secondary"
+                  onClick={this.onCancel}
+                >
+                  Cancel
                 </button>
               </div>
             </form>

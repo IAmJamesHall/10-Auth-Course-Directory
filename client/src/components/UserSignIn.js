@@ -19,6 +19,12 @@ export default class UserSignIn extends Component {
     this.setState({ user });
   };
 
+  onCancel = () => {
+    const locationState = this.props.location.state || {};
+    const from = locationState.from || "/courses";
+    this.props.history.push(from);
+  };
+
   submitForm = async (e) => {
     e.preventDefault();
     //attempt sign-in
@@ -72,7 +78,12 @@ export default class UserSignIn extends Component {
                   <button className="button" type="submit">
                     Sign In
                   </button>
-                  <button className="button button-secondary">Cancel</button>
+                  <button
+                    className="button button-secondary"
+                    onClick={this.onCancel}
+                  >
+                    Cancel
+                  </button>
                 </div>
               </form>
             </div>

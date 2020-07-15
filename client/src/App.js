@@ -17,7 +17,7 @@ import Header from "./components/Header";
 
 import Courses from "./components/Courses";
 import DeleteCourse from "./components/DeleteCourse";
-import CourseDetails from "./components/CourseDetails";
+import CourseDetails from "./components/CourseDetail";
 import EditCourseDetails from "./components/EditCourseDetails";
 
 import UserSignUp from "./components/UserSignUp";
@@ -32,9 +32,10 @@ import UnhandledError from "./components/UnhandledError";
 import { authSignUp, authSignIn, getAuthHeaders } from "./bin/auth";
 
 /* SERVER LOCATION */
-const serverLocation = "https://treehouse-project9.glitch.me";
+// to run on gh-pages, uncomment the below line
+// const serverLocation = "https://treehouse-project9.glitch.me";
 // to run locally, comment the above line and uncomment the below line
-// const serverLocation = "http://localhost:5000";
+const serverLocation = "http://localhost:5000";
 
 const cookies = new Cookies();
 
@@ -155,7 +156,7 @@ class App extends Component {
             {/* create new course */}
             <PrivateRoute
               exact
-              path="/courses/new"
+              path="/courses/create"
               user={this.state.user}
               render={(props) => (
                 <EditCourseDetails
