@@ -18,7 +18,9 @@ import Header from "./components/Header";
 import Courses from "./components/Courses";
 import DeleteCourse from "./components/DeleteCourse";
 import CourseDetails from "./components/CourseDetail";
-import EditCourseDetails from "./components/EditCourseDetails";
+import UpdateCourse from "./components/UpdateCourse";
+import CreateCourse from "./components/CreateCourse";
+// import EditCourseDetails from "./components/EditCourseDetails";
 
 import UserSignUp from "./components/UserSignUp";
 import UserSignIn from "./components/UserSignIn";
@@ -118,20 +120,28 @@ class App extends Component {
         url = `${this.state.serverLocation}/api/courses/${course.id}`;
       }
     }
+    try {
+      const response = await axios({
+        method,
+        url,
+        headers: getAuthHeaders(emailAddress, password),
+        data: {
+          title,
+          description,
+          estimatedTime,
+          materialsNeeded,
+        },
+      });
+      console.log(response);
+      return response;
+    } catch (e) {
+      console.log("error", e.response.data.errors);
+      return {
+        status: 400,
+        errors: e.response.data.errors,
+      };
+    }
     // send put/post request
-    const response = await axios({
-      method,
-      url,
-      headers: getAuthHeaders(emailAddress, password),
-      data: {
-        title,
-        description,
-        estimatedTime,
-        materialsNeeded,
-      },
-    });
-
-    return response;
   };
 
   render() {
@@ -144,7 +154,7 @@ class App extends Component {
             {/* view courses */}
             <Route
               exact
-              path="/courses"
+              path="/"
               render={() => (
                 <Courses
                   user={this.state.user}
@@ -153,13 +163,16 @@ class App extends Component {
               )}
             />
 
+            {/* redirect '/courses' route to / */}
+            <Route exact path="/courses" render={() => <Redirect to="/" />} />
+
             {/* create new course */}
             <PrivateRoute
               exact
               path="/courses/create"
               user={this.state.user}
               render={(props) => (
-                <EditCourseDetails
+                <CreateCourse
                   purpose="create"
                   saveCourse={this.saveCourse}
                   history={props.history}
@@ -188,7 +201,7 @@ class App extends Component {
               path="/courses/:courseId/update"
               user={this.state.user}
               render={(props) => (
-                <EditCourseDetails
+                <UpdateCourse
                   match={props.match}
                   purpose="update"
                   saveCourse={this.saveCourse}
@@ -243,9 +256,6 @@ class App extends Component {
                 <UserSignOut userSignOut={this.signOut} cookies={cookies} />
               )}
             />
-
-            {/* redirect '/' route to /courses */}
-            <Route exact path="/" render={() => <Redirect to="/courses" />} />
 
             {/* forbidden */}
             <Route path="/forbidden" component={Forbidden} />
