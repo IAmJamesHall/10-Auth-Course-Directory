@@ -61,11 +61,11 @@ class App extends Component {
    */
   signUp = async (form) => {
     const result = await authSignUp(form, this.state.serverLocation);
-    if (result) {
+    if (result.status === 400) {
+      return result;
+    } else {
       this.signIn(form);
       return true;
-    } else {
-      return false;
     }
   };
 
@@ -132,7 +132,7 @@ class App extends Component {
           materialsNeeded,
         },
       });
-      console.log(response);
+      console.log("response", response);
       return response;
     } catch (e) {
       console.log("error", e.response.data.errors);

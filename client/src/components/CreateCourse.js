@@ -47,10 +47,6 @@ class CreateCourse extends Component {
     }
   };
 
-  submitForm = (e) => {
-    e.preventDefault();
-  };
-
   render() {
     const { course } = this.state;
     const user = this.state.user || {};
