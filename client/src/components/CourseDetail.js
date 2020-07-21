@@ -16,7 +16,8 @@ class CourseDetails extends Component {
       );
       this.setState({ course: data });
     } catch {
-      this.props.history.push("/courses");
+      // error fetching course, probably 404
+      this.props.history.push("/notfound");
     }
   }
 

@@ -36,9 +36,15 @@ class UpdateCourse extends Component {
 
       this.setState({ course: course.data });
       this.setState({ user: course.data.User });
+
+      // check if auth'd user owns this course
+      if (this.props.user.userId !== this.state.user.id) {
+        // if not, redirect home
+        this.props.history.push("/");
+      }
     } catch {
-      //error fetching course from server
-      this.props.history.push("/");
+      //error fetching course from server (probably 404)
+      this.props.history.push("/notfound");
     }
   }
 
