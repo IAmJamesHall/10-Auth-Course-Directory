@@ -1,3 +1,9 @@
+# Overview
+
+This folder is the React client for the courses api (in the `/api` folder). All the usual create-react-app functions work as detailed below.
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
