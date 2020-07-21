@@ -7,7 +7,7 @@ I built a front-end to manage and utilize a previous API I had built. The front-
 - update courses
 - delete courses
 
-I built off html mockups in building this app.
+I built off of HTML mockups in building this app.
 
 ### Extra Credit
 
@@ -24,8 +24,8 @@ I built off html mockups in building this app.
 
 This repository contains two folders: `api`, and `client`, and assumes that you have a recent version of node and npm installed.
 
-Open the api folder in your terminal of choice and run `npm install`. Then run `npm start`. This will open the API on `localhost:5000`.
+Open the api folder in your terminal of choice and run `npm install`. Then run `npm run devstart`. This will open the API using nodemon on `localhost:5000`.
 
-In `client/app.js` on line 35, change `serverLocation` to `http://localhost:5000`.
+In `client/App.js` around line 36, make sure that `serverLocation` is set to `http://localhost:5000`.
 
-While that is still open, go to another terminal and run `npm install` in the `client` folder. Afterwards, run `npm start` in the same folder. This will start the React client on `localhost:3000`. Navigate to that url to run the app.
+While that terminal is still open, go to another terminal and run `npm install` in the `client` folder. When that finishes, run `npm start` in the same folder. This will start the React client on `localhost:3000`. Navigate to that url to run the app.
