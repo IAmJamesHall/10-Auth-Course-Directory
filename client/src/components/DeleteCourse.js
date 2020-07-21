@@ -13,17 +13,17 @@ class DeleteCourse extends Component {
     const { courseId } = this.props.match.params;
     const { user } = this.props;
 
-    // get course to delete
-    const getResponse = await axios.get(
-      `${this.props.serverLocation}/api/courses/${courseId}`
-    );
-    if (getResponse.status !== 404) {
-      // if course exists
-      const course = getResponse.data;
+    try {
+      // get course to delete
+      const getResponse = await axios.get(
+        `${this.props.serverLocation}/api/courses/${courseId}`
+      );
+      if (getResponse.status !== 404) {
+        // if course exists
+        const course = getResponse.data;
 
-      // if user owns course
-      if (this.props.user.userId === course.User.id) {
-        try {
+        // if user owns course
+        if (this.props.user.userId === course.User.id) {
           // attempt deleting the course
           await axios({
             method: "delete",
@@ -32,11 +32,10 @@ class DeleteCourse extends Component {
           });
           // course successfully deleted
           this.props.history.push("/courses");
-        } catch (error) {
-          // if error, redirect to error path
-          this.props.history.push("/error");
         }
       }
+    } catch {
+      this.props.history.push("/error");
     }
   }
 
