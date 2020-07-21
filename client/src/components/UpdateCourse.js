@@ -24,17 +24,22 @@ class UpdateCourse extends Component {
   async componentDidMount() {
     // download current course
     const { courseId } = this.props.match.params;
-    const course = await axios.get(
-      `${this.props.serverLocation}/api/courses/${courseId}`
-    );
+    try {
+      const course = await axios.get(
+        `${this.props.serverLocation}/api/courses/${courseId}`
+      );
 
-    // replace any null values with empty strings
-    Object.keys(course.data).forEach((key) => {
-      course.data[key] = course.data[key] || "";
-    });
+      // replace any null values with empty strings
+      Object.keys(course.data).forEach((key) => {
+        course.data[key] = course.data[key] || "";
+      });
 
-    this.setState({ course: course.data });
-    this.setState({ user: course.data.User });
+      this.setState({ course: course.data });
+      this.setState({ user: course.data.User });
+    } catch {
+      //error fetching course from server
+      this.props.history.push("/");
+    }
   }
 
   // update state to reflect form

@@ -1,20 +1,23 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
-// props.match.params.courseId
 
-export default class CourseDetails extends Component {
+class CourseDetails extends Component {
   state = {
     course: {},
   };
 
   async componentDidMount() {
     const { courseId } = this.props.match.params;
-    const { data } = await axios.get(
-      `${this.props.serverLocation}/api/courses/${courseId}`
-    );
-    this.setState({ course: data });
+    try {
+      const { data } = await axios.get(
+        `${this.props.serverLocation}/api/courses/${courseId}`
+      );
+      this.setState({ course: data });
+    } catch {
+      this.props.history.push("/courses");
+    }
   }
 
   /**
@@ -116,3 +119,5 @@ export default class CourseDetails extends Component {
     }
   }
 }
+
+export default withRouter(CourseDetails);
