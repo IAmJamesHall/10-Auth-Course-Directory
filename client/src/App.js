@@ -132,10 +132,8 @@ class App extends Component {
           materialsNeeded,
         },
       });
-      console.log("response", response);
       return response;
     } catch (e) {
-      console.log("error", e.response.data.errors);
       return {
         status: 400,
         errors: e.response.data.errors,

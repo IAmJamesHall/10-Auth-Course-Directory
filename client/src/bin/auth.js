@@ -23,7 +23,7 @@ const getAuthHeaders = (emailAddress, password) => {
  */
 const authSignUp = async (form, serverLocation) => {
   try {
-    const response = await axios.post(`${serverLocation}/api/users`, {
+    await axios.post(`${serverLocation}/api/users`, {
       ...form,
     });
     return {
@@ -36,7 +36,6 @@ const authSignUp = async (form, serverLocation) => {
       },
     };
   } catch (e) {
-    console.log("error siging up user", e.response.data.errors);
     return {
       status: 400,
       errors: e.response.data.errors,
@@ -57,7 +56,6 @@ const authSignIn = async (form, serverLocation) => {
     const response = await axios.get(`${serverLocation}/api/users`, {
       headers: getAuthHeaders(emailAddress, password),
     });
-    console.log(response);
 
     if (response.status === 200) {
       response.data.user.password = password;
