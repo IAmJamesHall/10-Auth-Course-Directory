@@ -19,10 +19,22 @@ router.get(
 router.post(
   "/",
   asyncHandler(async (req, res) => {
-    const validationErrors = validateInput(
+    let validationErrors = validateInput(
       ["firstName", "lastName", "emailAddress", "password"],
       req.body
     );
+    // check if email address has been used already
+    const existingUser = await User.findOne({
+      where: {
+        emailAddress: req.body.emailAddress,
+      },
+    });
+    console.log("existingUser", existingUser);
+    if (existingUser) {
+      validationErrors.push(
+        "A user account already exists with this email. Do you want to <b>sign in?</b>"
+      );
+    }
 
     // if no validation errors
     if (validationErrors.length === 0) {
@@ -31,19 +43,21 @@ router.post(
       var hashedPassword = bcrypt.hashSync(req.body.password, salt);
       req.body.password = hashedPassword;
 
-      // create the user
-      await User.create(req.body);
-      res.status(201).end();
+      try {
+        // create the user
+        await User.create(req.body);
+        res.status(201).end();
+      } catch (e) {
+        console.log("YO!", e.errors);
+      }
     } else {
       //validation errors were found
       console.log(validationErrors);
       console.log(req.body.firstName);
-      res
-        .status(400)
-        .json({
-          message: "Missing information to create a new user",
-          errors: validationErrors,
-        });
+      res.status(400).json({
+        message: "Missing information to create a new user",
+        errors: validationErrors,
+      });
     }
   })
 );
