@@ -41,9 +41,7 @@ class UserSignUp extends Component {
     form.emailAddress = form.emailAddress.toLowerCase();
 
     const response = await this.props.userSignUp(form);
-    console.log("response from UserSignUp", response);
     if (response.status === 400) {
-      console.log("response", response);
       validationErrors = [...validationErrors, ...response.errors];
       this.setState({
         validationErrors: response.errors,

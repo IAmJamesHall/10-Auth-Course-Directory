@@ -37,7 +37,6 @@ class CreateCourse extends Component {
   submitForm = async (e) => {
     e.preventDefault();
     const response = await this.props.saveCourse(this.state.course, "create");
-    console.log("response", response);
     if (response.status === 200) {
       this.props.history.push(`/courses/${response.data.id}`);
     } else {

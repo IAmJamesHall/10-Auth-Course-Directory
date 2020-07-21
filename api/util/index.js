@@ -7,7 +7,6 @@ function asyncHandler(cb) {
     try {
       await cb(req, res, next);
     } catch (error) {
-      console.log(error);
       res.status(500).send(error);
     }
   };
@@ -35,7 +34,6 @@ function authenticateUser() {
   return async (req, res, next) => {
     const auth = require("basic-auth");
     const authUser = auth(req);
-    console.log("authUser: ", authUser);
     // normalize attributes
     if (authUser) {
       authUser.emailAddress = authUser.name;

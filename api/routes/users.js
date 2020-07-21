@@ -29,7 +29,6 @@ router.post(
         emailAddress: req.body.emailAddress,
       },
     });
-    console.log("existingUser", existingUser);
     if (existingUser) {
       validationErrors.push(
         "A user account already exists with this email. Do you want to <b>sign in?</b>"
@@ -47,13 +46,9 @@ router.post(
         // create the user
         await User.create(req.body);
         res.status(201).end();
-      } catch (e) {
-        console.log("YO!", e.errors);
-      }
+      } catch (e) {}
     } else {
       //validation errors were found
-      console.log(validationErrors);
-      console.log(req.body.firstName);
       res.status(400).json({
         message: "Missing information to create a new user",
         errors: validationErrors,
