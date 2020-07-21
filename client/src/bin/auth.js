@@ -23,7 +23,7 @@ const getAuthHeaders = (emailAddress, password) => {
  */
 const authSignUp = async (form, serverLocation) => {
   try {
-    await axios.post(`${serverLocation}/api/users`, {
+    const response = await axios.post(`${serverLocation}/api/users`, {
       ...form,
     });
     return {
@@ -35,8 +35,12 @@ const authSignUp = async (form, serverLocation) => {
         lastName: form.lastName,
       },
     };
-  } catch (error) {
-    return false;
+  } catch (e) {
+    console.log("error siging up user", e.response.data.errors);
+    return {
+      status: 400,
+      errors: e.response.data.errors,
+    };
   }
 };
 

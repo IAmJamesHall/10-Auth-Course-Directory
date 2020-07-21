@@ -22,7 +22,7 @@ export default class UserSignIn extends Component {
   onCancel = () => {
     const locationState = this.props.location.state || {};
     const from = locationState.from || "/courses";
-    this.props.history.push(from);
+    this.props.history.push("/");
   };
 
   submitForm = async (e) => {
