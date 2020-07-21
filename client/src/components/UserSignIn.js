@@ -22,7 +22,7 @@ export default class UserSignIn extends Component {
   onCancel = () => {
     const locationState = this.props.location.state || {};
     const from = locationState.from || "/courses";
-    this.props.history.push(from);
+    this.props.history.push("/");
   };
 
   submitForm = async (e) => {
@@ -32,8 +32,13 @@ export default class UserSignIn extends Component {
     if (response === true) {
       // if a protected route was previously attempted, redirect to it now
       // otherwise redirect to '/courses'
-      const locationState = this.props.location.state || {};
-      const from = locationState.from || "/courses";
+      let from;
+      try {
+        from = this.props.location.state.from.pathname;
+      } catch {
+        from = "/";
+      }
+      e;
       this.props.history.push(from);
     } else {
       this.setState({ validationErrors: ["Email or password incorrect"] });
