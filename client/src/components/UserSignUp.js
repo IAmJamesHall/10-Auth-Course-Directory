@@ -10,7 +10,6 @@ class UserSignUp extends Component {
       lastName: "",
       emailAddress: "",
       password: "",
-      confirmPassword: "",
     },
   };
 
@@ -24,12 +23,6 @@ class UserSignUp extends Component {
     this.props.history.push("/courses");
   };
 
-  addValidationError = async (error) => {
-    this.setState((prevState) => ({
-      validationErrors: [...prevState.validationErrors, error],
-    }));
-  };
-
   submitForm = async (e) => {
     e.preventDefault();
     const { form } = this.state;
@@ -37,41 +30,27 @@ class UserSignUp extends Component {
     //delete current form validation errors
     this.setState({ validationErrors: [] });
 
-    const validationErrors = [];
+    let validationErrors = [];
 
     // check that password was correctly entered twice
     if (form.password !== form.confirmPassword) {
       validationErrors.push("Passwords do not match");
     }
 
-    // validate data
+    //clean up email
+    form.emailAddress = form.emailAddress.toLowerCase();
 
-    Object.keys(form).forEach(async (formElement) => {
-      if (this.state.form[formElement] === "") {
-        //convert camelCase to caps case
-        var result = formElement.replace(/([A-Z])/g, " $1");
-        var prettyFormElement =
-          result.charAt(0).toUpperCase() + result.slice(1);
-
-        validationErrors.push(`${prettyFormElement} cannot be empty`);
-      }
-    });
-
-    if (validationErrors.length === 0) {
-      const { form } = this.state;
-      form.emailAddress = form.emailAddress.toLowerCase();
-      const response = await this.props.userSignUp(form);
-
-      if (response) {
-        //redirect to main page
-        this.props.history.push("/courses");
-      } else {
-        this.setState({
-          validationErrors: ["Unknown problem. Please try again"],
-        });
-      }
+    const response = await this.props.userSignUp(form);
+    console.log("response from UserSignUp", response);
+    if (response.status === 400) {
+      console.log("response", response);
+      validationErrors = [...validationErrors, ...response.errors];
+      this.setState({
+        validationErrors: response.errors,
+      });
     } else {
-      this.setState({ validationErrors });
+      //redirect to main page
+      this.props.history.push("/courses");
     }
   };
 
@@ -127,17 +106,6 @@ class UserSignUp extends Component {
                   placeholder="Password"
                   onChange={this.onChange}
                   value={form.password}
-                />
-              </div>
-              <div>
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  className=""
-                  placeholder="Confirm Password"
-                  onChange={this.onChange}
-                  value={form.confirmPassword}
                 />
               </div>
               <div className="grid-100 pad-bottom">
