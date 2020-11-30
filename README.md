@@ -26,6 +26,6 @@ This repository contains two folders: `api`, and `client`, and assumes that you 
 
 Open the api folder in your terminal of choice and run `npm install`. Then run `npm run devstart`. This will open the API using nodemon on `localhost:5000`.
 
-In `client/App.js` around line 36, make sure that `serverLocation` is set to `http://localhost:5000`.
+In `client/src/App.js` around line 36, make sure that `serverLocation` is set to `http://localhost:5000`.
 
 While that terminal is still open, go to another terminal and run `npm install` in the `client` folder. When that finishes, run `npm start` in the same folder. This will start the React client on `localhost:3000`. Navigate to that url to run the app.
