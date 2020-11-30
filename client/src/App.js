@@ -35,9 +35,9 @@ import { authSignUp, authSignIn, getAuthHeaders } from "./bin/auth";
 
 /* SERVER LOCATION */
 // to run on gh-pages, uncomment the below line
-// const serverLocation = "https://treehouse-project9.glitch.me";
+const serverLocation = "https://jameshall-courses-rest-api.herokuapp.com";
 // to run locally, comment the above line and uncomment the below line
-const serverLocation = "http://localhost:5000";
+// const serverLocation = "http://localhost:5000";
 
 const cookies = new Cookies();
 
